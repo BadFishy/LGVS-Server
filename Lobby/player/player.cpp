@@ -1,21 +1,17 @@
 #include "player.h"
 
-int LOCK = 0;
+
 
 bool Player::start()
 {
-	while(LOCK){}
-	LOCK = 1;
+	
 	c->out("创建玩家" + std::to_string(playernum) + "线程成功");
 	sendstr("test" + std::to_string(playernum));
 	//char *recvbuf;
 	//recvch();
 	//c->out("接收到客户端发来的信息：" + (string)recvbuf);
-	//closesocket(*sockConnect);
-	//c->out("断开连接");
 	//delete c, sockConnect;
-	LOCK = 0;
-
+	
 	return true;
 }
 

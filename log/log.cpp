@@ -5,7 +5,8 @@ int suo = 0;
 int Log::out(string str)
 {
 
-	
+	while (suo) {}
+	suo = 1;
 	string nowtime = getTime();
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN);//…Ë÷√¬Ã…´
 	ofstream file(filepath, ios::app);

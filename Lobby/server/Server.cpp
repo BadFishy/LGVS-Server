@@ -1,6 +1,11 @@
 #include "Server.h"
 #include "player/Player.h"
 
+void player_thread(Player *player){
+	player->start();
+	delete player;
+}
+
 int Server::start()
 {
 	
@@ -10,18 +15,13 @@ int Server::start()
 		SOCKET *sockConnect = new SOCKET;
 		*sockConnect = accept(sock, (SOCKADDR*)&addrClient, &len);
 		Log *login_user = new Log("player", (string)inet_ntoa(addrClient.sin_addr));
-		//c->out ("与[" + (string)inet_ntoa(addrClient.sin_addr) + "]建立连接") ;
 		login_user->out("建立连接");
 		playernum++;
-		//Player *player = new Player(sockConnect, login_user, playernum);
-		Player player(sockConnect, login_user, playernum);
-		login_user->out("创建玩家"+ std::to_string(playernum) +"线程...");
-		//thread player_thread(player_server);	//创建玩家专用线程
-		//pool.append(player);
-		//player.sendstr("ceshi");
-		//char *ch;
-		//player.recvch();
-		pool.append(std::bind(&Player::start, &player));
+		Player *player = new Player(sockConnect, login_user, playernum);
+		login_user->out("创建玩家"+ std::to_string(playernum) +"线程中...");
+		pool.append(std::bind(player_thread, player));//创建玩家线程
+		
+		
 	}
 	return 0;
 }
