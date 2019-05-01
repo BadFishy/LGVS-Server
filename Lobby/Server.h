@@ -19,7 +19,7 @@ private:
 	SOCKADDR_IN addrClient;
 	int len;
 	int port;
-
+	
 public:
 	Server(Config* config, DB *db_in) {
 		c = new Log("Lobby");
@@ -27,6 +27,8 @@ public:
 		db = db_in;
 	};
 	~Server();
+
+	int playernum = 0;
 
 	int start();
 	int init();

@@ -146,5 +146,5 @@ bool initdb(Log *c, DB* db) {
 }
 
 void start_lobby_server(Server *lobby_server) {
-	while (true) { lobby_server->start(); }
+	lobby_server->start();
 }
