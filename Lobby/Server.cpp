@@ -1,10 +1,14 @@
-#include "pch.h"
+
 #include "Server.h"
 #include "Player.h"
 
 
-void player_server(Player *player) {
-	player->start();
+void player_server() {
+	while (1) {
+
+	}
+	//Player *player = (Player *)args;
+	//player->start();
 	
 }
 
@@ -13,15 +17,15 @@ int Server::start()
 	while (1) {
 		len = sizeof(SOCKADDR);
 		c->out("等待用户连接中...");
-		SOCKET sockConnect = accept(sock, (SOCKADDR*)&addrClient, &len);
-		Log *login_user = new Log("login", (string)inet_ntoa(addrClient.sin_addr));
+		SOCKET *sockConnect = new SOCKET;
+		*sockConnect = accept(sock, (SOCKADDR*)&addrClient, &len);
+		Log *login_user = new Log("player", (string)inet_ntoa(addrClient.sin_addr));
 		//c->out ("与[" + (string)inet_ntoa(addrClient.sin_addr) + "]建立连接") ;
 		login_user->out("建立连接");
 		playernum++;
 		Player *player = new Player(sockConnect, login_user, playernum);
-		
 		login_user->out("创建玩家"+ std::to_string(playernum) +"专用线程...");
-		thread player_thread(player_server, player);	//创建玩家专用线程
+		//thread player_thread(player_server);	//创建玩家专用线程
 	}
 	return 0;
 }
@@ -61,11 +65,10 @@ int Server::init()
 	myaddr.sin_addr.S_un.S_addr = htonl(INADDR_ANY);//将u_long型转换为网络字节序列
 	myaddr.sin_port = htons(port);// 将u_short型转换为网络字节序列
 
-	bind(sock, (SOCKADDR*)&myaddr, sizeof(myaddr));//绑定套接字
+	::bind(sock, (SOCKADDR*)&myaddr, sizeof(myaddr));//绑定套接字
 
 	//4.设置监听
 	listen(sock, 5);
-	//cout << "开始监听10099端口..." << endl;
 	c->out("开始监听" + to_string(port) + "端口...");
 	return 0;
 }

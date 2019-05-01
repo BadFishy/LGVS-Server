@@ -15,26 +15,23 @@
     </Filter>
   </ItemGroup>
   <ItemGroup>
-    <ClInclude Include="pch.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Log\log.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
-    <ClInclude Include="..\Config\Config.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="Server.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="player.h">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="config.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="DB.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="log.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="pch.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
     <ClCompile Include="Lobby.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
@@ -42,6 +39,12 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="player.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="config.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="DB.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

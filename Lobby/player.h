@@ -1,15 +1,17 @@
 #pragma once
+#include "Server.h"
+
 class Player
 {
 private:
 	Log *c;
 	DB *db;
-	SOCKET sockConnect;
+	SOCKET *sockConnect;
 	
 
 
 public:
-	Player(SOCKET sock, Log *userlog, int num) {
+	Player(SOCKET *sock, Log *userlog, int num) {
 		sockConnect = sock;
 		c = userlog;
 		playernum = num;

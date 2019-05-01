@@ -1,22 +1,23 @@
 ﻿// Lobby.cpp : 此文件包含 "main" 函数。程序执行将在此处开始并结束。
 //
 
-#include "pch.h"
 #include <iostream>
-#include <windows.h>
-#include "../log/log.h"
+#include "log.h"
 #include <io.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <iterator>
-#include "../DB/DB.h"
+#include "DB.h"
 #include "server.h"
 #include <thread>
+#include <windows.h>
 
 
-int init(Log);//1. 初始化
+int init(Log*);//1. 初始化
 bool initdb(Log *c, DB* db);//第一次启动初始化数据库
+
+void start_lobby_server(Server *lobby_server);
 
 //2. 开启服务端
 int start(Log *c)

@@ -1,19 +1,25 @@
-#include "pch.h"
 #include "player.h"
-#include "Server.h"
 
 bool Player::start()
 {
-	c->out("创建玩家" + std::to_string(playernum) + "专用线程成功");
-	sendstr("test" + std::to_string(playernum));
+	//c->out("创建玩家" + std::to_string(playernum) + "专用线程成功");
+	//sendstr("test" + std::to_string(playernum));
+	while (1) {
+
+	}
+
+	//closesocket(sockConnect);
+	//->out("断开连接");
+	//delete c;
+
 	return true;
 }
 
 bool Player::sendstr(string str)
 {
 	c->out("向客户端发送消息："+ str);
-	const char* sendBuf = str.data;	
-	if (send(sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
+	const char *sendBuf = str.data();
+	if (send(*sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
 		c->err("发送失败，可能是客户端已关闭");
 		return false;
 	}
@@ -25,7 +31,7 @@ bool Player::recvch(char* ch) //char* ch 为此方法接收到的信息
 {
 	c->out("从客户端接受消息中……");
 	char* recvBuf;
-	if (recv(sockConnect, recvBuf, 256, 0) == -1)//TCP CLIENT端关闭后，服务器端的recv会一直返回-1，此时如果不退出，服务端recv会一直接收
+	if (recv(*sockConnect, recvBuf, 256, 0) == -1)//TCP CLIENT端关闭后，服务器端的recv会一直返回-1，此时如果不退出，服务端recv会一直接收
 	{
 		c->err("接收失败，可能是客户端已关闭");
 		return false;
