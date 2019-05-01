@@ -5,7 +5,7 @@
 #include <iostream>
 #include <time.h>
 #include <fstream>
-#include "config.h"
+#include "config/config.h"
 
 using namespace std;
 

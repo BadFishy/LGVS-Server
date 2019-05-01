@@ -75,7 +75,7 @@
   </PropertyGroup>
   <PropertyGroup Condition="'$(Configuration)|$(Platform)'=='Debug|x64'">
     <LinkIncremental>true</LinkIncremental>
-    <IncludePath>C:\mysql\include;C:\Git\LGVS-Server\Lobby;$(IncludePath)</IncludePath>
+    <IncludePath>C:\mysql\include;.\;..\;$(IncludePath)</IncludePath>
     <LibraryPath>C:\mysql\lib;C:\Git\LGVS-Server\Lobby;$(LibraryPath)</LibraryPath>
     <SourcePath>C:\Git\LGVS-Server\Lobby;$(SourcePath)</SourcePath>
   </PropertyGroup>
@@ -154,21 +154,21 @@
     </Link>
   </ItemDefinitionGroup>
   <ItemGroup>
-    <ClInclude Include="config.h" />
-    <ClInclude Include="DB.h" />
-    <ClInclude Include="log.h" />
-    <ClInclude Include="player.h" />
-    <ClInclude Include="Server.h" />
-    <ClInclude Include="threadPool.h" />
+    <ClInclude Include="..\config\config.h" />
+    <ClInclude Include="..\DB\DB.h" />
+    <ClInclude Include="..\Log\log.h" />
+    <ClInclude Include="..\threadPool\threadPool.h" />
+    <ClInclude Include="player\player.h" />
+    <ClInclude Include="server\Server.h" />
   </ItemGroup>
   <ItemGroup>
-    <ClCompile Include="config.cpp" />
-    <ClCompile Include="DB.cpp" />
+    <ClCompile Include="..\config\config.cpp" />
+    <ClCompile Include="..\DB\DB.cpp" />
+    <ClCompile Include="..\Log\log.cpp" />
+    <ClCompile Include="..\threadPool\threadPool.cpp" />
     <ClCompile Include="Lobby.cpp" />
-    <ClCompile Include="log.cpp" />
-    <ClCompile Include="player.cpp" />
-    <ClCompile Include="Server.cpp" />
-    <ClCompile Include="threadPool.cpp" />
+    <ClCompile Include="player\player.cpp" />
+    <ClCompile Include="server\Server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">

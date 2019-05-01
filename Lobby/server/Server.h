@@ -1,9 +1,9 @@
 #pragma once
-#include "log.h"
+#include "log/log.h"
 #include <iostream>
 #include <time.h>
-#include "DB.h"
-#include "threadPool.h"
+#include "DB/DB.h"
+#include "threadPool/threadPool.h"
 //#include <thread>
 
 class Server

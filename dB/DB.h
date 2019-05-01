@@ -1,5 +1,5 @@
 #pragma once
-#include "log.h"
+#include "log/log.h"
 #include <stdio.h>  
 //#include <WinSock.h>  //一定要包含这个 
 #include "mysql.h"  

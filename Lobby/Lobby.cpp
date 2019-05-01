@@ -2,14 +2,14 @@
 //
 
 #include <iostream>
-#include "log.h"
+#include "log/log.h"
 #include <io.h>
 #include <fstream>
 #include <iostream>
 #include <vector>
 #include <iterator>
-#include "DB.h"
-#include "server.h"
+#include "db/DB.h"
+#include "server/server.h"
 #include <thread>
 #include <windows.h>
 

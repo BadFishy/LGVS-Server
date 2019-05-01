@@ -1,5 +1,5 @@
 #pragma once
-#include "Server.h"
+#include "server/Server.h"
 
 class Player
 {
@@ -8,8 +8,6 @@ private:
 	DB *db;
 	SOCKET *sockConnect;
 	
-
-
 public:
 	Player(SOCKET *sock, Log *userlog, int num) {
 		sockConnect = sock;
