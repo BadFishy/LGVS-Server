@@ -18,8 +18,8 @@ int Log::out(string str)
 
 int Log::err(string str)
 {
-	//while (suo) {}
-	//suo = 1;
+	while (suo) {}
+	suo = 1;
 	string nowtime = getTime();
 	SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);//…Ë÷√∫Ï…´
 	ofstream file(filepath, ios::app);

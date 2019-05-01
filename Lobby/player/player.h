@@ -1,14 +1,15 @@
 #pragma once
 #include "server/Server.h"
+#include <windows.h>
 
 class Player
 {
 private:
-	Log *c;
-	DB *db;
 	SOCKET *sockConnect;
 	
 public:
+	DB *db;
+	Log *c;
 	int playerdeteLOCK = 0;
 	Player(SOCKET *sock, Log *userlog, int num) {
 		sockConnect = sock;
@@ -25,5 +26,9 @@ public:
 	bool start();
 	bool sendstr(string str);
 	bool recvch(char* ch = new char);
+	bool heart();
+	int heartLOCK = 0;
+	int sendLOCK = 0;
+	int recvLOCK = 0;
 };
 

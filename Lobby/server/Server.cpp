@@ -1,14 +1,27 @@
 #include "Server.h"
 #include "player/Player.h"
 
+
+
+
 void player_thread(Player *player){
 	player->start();
+	char ch[100] = "aaa";
+	player->heart();
+	//***将数据库中对应玩家的online改为false 清空home数据库
+	//Sleep(5000);
+	while (player->heartLOCK == 0) {
+		Sleep(5);
+	}
+	player->c->out("即将删除本玩家线程");
+	Sleep(5000);
 	delete player;
 }
 
 int Server::start()
 {
-	
+	threadPool pool(16);
+
 	while (1) {
 		len = sizeof(SOCKADDR);
 		c->out("等待用户连接中...");
@@ -18,9 +31,14 @@ int Server::start()
 		login_user->out("建立连接");
 		playernum++;
 		Player *player = new Player(sockConnect, login_user, playernum);
-		login_user->out("创建玩家"+ std::to_string(playernum) +"线程中...");
-		pool.append(std::bind(player_thread, player));//创建玩家线程
+		login_user->out("创建玩家" + std::to_string(playernum) + "线程中...");
+
 		
+		//int ret = setsockopt(*sockConnect, SOL_SOCKET, SO_SNDTIMEO, timeout, sizeof(timeout));
+
+
+		pool.append(std::bind(player_thread, player));//创建玩家线程
+		//pool.append(std::bind(&Player::heart,player));
 		
 	}
 	return 0;
@@ -66,5 +84,8 @@ int Server::init()
 	//4.设置监听
 	listen(sock, 5);
 	c->out("开始监听" + to_string(port) + "端口...");
+	
+	
+
 	return 0;
 }

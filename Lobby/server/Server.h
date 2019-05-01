@@ -21,7 +21,7 @@ private:
 	SOCKADDR_IN addrClient;
 	int len;
 	int port;
-	threadPool pool;
+	
 	
 public:
 	Server(Config* config, DB *db_in) {
