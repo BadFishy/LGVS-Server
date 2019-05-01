@@ -9,6 +9,7 @@
 
 using namespace std;
 
+
 class Log
 {
 	/**
@@ -47,23 +48,8 @@ public:
 		else qz = ip;
 	};
 
-	int out(string str) {
-		string nowtime = getTime();
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_GREEN);//设置绿色
-		ofstream file(filepath, ios::app);
-		file << "[" << nowtime << "]" << qz << str << endl;
-		cout << "[" << nowtime << "]" << qz << str << " [" << filepath << "]" << endl;
-		return 0;
-	};
+	int out(string str) ;
 
-	int err(string str) {
-		string nowtime = getTime();
-		SetConsoleTextAttribute(GetStdHandle(STD_OUTPUT_HANDLE), FOREGROUND_INTENSITY | FOREGROUND_RED);//设置红色
-		ofstream file(filepath, ios::app);
-		ofstream erro(erropath, ios::app);
-		file << "[" << nowtime << "]" << qz << "Error:" << str << endl;
-		erro << "[" << nowtime << "]" << qz << "Error:" << str << endl;
-		cout << "[" << nowtime << "]" << qz << "Error:" << str << " [" << filepath << "]" << endl;
-		return 0;
-	};
+	int err(string str);
+	
 };

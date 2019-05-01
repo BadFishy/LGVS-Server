@@ -16,11 +16,11 @@ public:
 		c = userlog;
 		playernum = num;
 	};
-	~Player();
+	~Player() {};
 
 	int playernum;
 	bool start();
 	bool sendstr(string str);
-	bool recvch(char* ch);
+	bool recvch(char* ch = new char);
 };
 

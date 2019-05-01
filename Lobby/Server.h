@@ -3,7 +3,8 @@
 #include <iostream>
 #include <time.h>
 #include "DB.h"
-#include <thread>
+#include "threadPool.h"
+//#include <thread>
 
 class Server
 {
@@ -19,6 +20,7 @@ private:
 	SOCKADDR_IN addrClient;
 	int len;
 	int port;
+	threadPool pool;
 	
 public:
 	Server(Config* config, DB *db_in) {

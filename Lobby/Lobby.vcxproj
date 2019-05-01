@@ -159,13 +159,16 @@
     <ClInclude Include="log.h" />
     <ClInclude Include="player.h" />
     <ClInclude Include="Server.h" />
+    <ClInclude Include="threadPool.h" />
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="config.cpp" />
     <ClCompile Include="DB.cpp" />
     <ClCompile Include="Lobby.cpp" />
+    <ClCompile Include="log.cpp" />
     <ClCompile Include="player.cpp" />
     <ClCompile Include="Server.cpp" />
+    <ClCompile Include="threadPool.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />
   <ImportGroup Label="ExtensionTargets">
