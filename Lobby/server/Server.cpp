@@ -2,25 +2,19 @@
 #include "player/Player.h"
 
 
-
-
 void player_thread(Player *player){
 	player->start();
 	char ch[100] = "aaa";
 	player->heart();
 	//***将数据库中对应玩家的online改为false 清空home数据库
-	//Sleep(5000);
-	while (player->heartLOCK == 0) {
-		Sleep(5);
-	}
 	player->c->out("即将删除本玩家线程");
-	Sleep(5000);
+	Sleep(3000);
 	delete player;
 }
 
 int Server::start()
 {
-	threadPool pool(16);
+	dpool::ThreadPool pool(4);
 
 	while (1) {
 		len = sizeof(SOCKADDR);
@@ -36,8 +30,8 @@ int Server::start()
 		
 		//int ret = setsockopt(*sockConnect, SOL_SOCKET, SO_SNDTIMEO, timeout, sizeof(timeout));
 
-
-		pool.append(std::bind(player_thread, player));//创建玩家线程
+		auto fut = pool.submit(player_thread, player);
+		//pool.append(std::bind(player_thread, player));//创建玩家线程
 		//pool.append(std::bind(&Player::heart,player));
 		
 	}

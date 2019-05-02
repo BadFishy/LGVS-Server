@@ -25,9 +25,8 @@ public:
 	int playernum;
 	bool start();
 	bool sendstr(string str);
-	bool recvch(char* ch = new char);
-	bool heart();
-	int heartLOCK = 0;
+	string recvch(const char* timeout = "60000");//timeout ms
+	int heart();
 	int sendLOCK = 0;
 	int recvLOCK = 0;
 };

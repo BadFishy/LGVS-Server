@@ -157,7 +157,7 @@
     <ClInclude Include="..\config\config.h" />
     <ClInclude Include="..\DB\DB.h" />
     <ClInclude Include="..\Log\log.h" />
-    <ClInclude Include="..\threadPool\threadPool.h" />
+    <ClInclude Include="..\threadPool\ThreadPool.hpp" />
     <ClInclude Include="player\player.h" />
     <ClInclude Include="server\Server.h" />
   </ItemGroup>
@@ -165,7 +165,6 @@
     <ClCompile Include="..\config\config.cpp" />
     <ClCompile Include="..\DB\DB.cpp" />
     <ClCompile Include="..\Log\log.cpp" />
-    <ClCompile Include="..\threadPool\threadPool.cpp" />
     <ClCompile Include="Lobby.cpp" />
     <ClCompile Include="player\player.cpp" />
     <ClCompile Include="server\Server.cpp" />

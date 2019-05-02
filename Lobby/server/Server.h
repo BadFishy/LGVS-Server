@@ -3,17 +3,13 @@
 #include <iostream>
 #include <time.h>
 #include "DB/DB.h"
-#include "threadPool/threadPool.h"
+#include "threadPool/threadPool.hpp"
 //#include <thread>
 
 
 class Server
 {
-	/**
-	 *	Login类 介绍
-	 *	用于玩家与大厅交流，需要输入日志指针类型(Log*)
-	 *	使用 start() 启动登陆服务器
-	 */
+
 private:
 	Log *c;
 	DB *db;

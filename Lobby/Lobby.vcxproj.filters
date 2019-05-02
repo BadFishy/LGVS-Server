@@ -24,13 +24,13 @@
     <ClInclude Include="..\config\config.h">
       <Filter>头文件</Filter>
     </ClInclude>
-    <ClInclude Include="..\threadPool\threadPool.h">
-      <Filter>头文件</Filter>
-    </ClInclude>
     <ClInclude Include="player\player.h">
       <Filter>头文件</Filter>
     </ClInclude>
     <ClInclude Include="server\Server.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
+    <ClInclude Include="..\threadPool\ThreadPool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
   </ItemGroup>
@@ -45,9 +45,6 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="..\config\config.cpp">
-      <Filter>源文件</Filter>
-    </ClCompile>
-    <ClCompile Include="..\threadPool\threadPool.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="player\player.cpp">
