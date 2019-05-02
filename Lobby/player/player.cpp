@@ -22,7 +22,7 @@ bool Player::start()
 bool Player::sendstr(string str)
 {
 	while (sendLOCK) { 
-		Sleep(100); 
+		Sleep(10); 
 	}
 	sendLOCK = 1;
 	//c->out("向客户端发送消息："+ str);
@@ -41,14 +41,14 @@ string Player::recvch(const char* time)
 
 	setsockopt(*sockConnect, SOL_SOCKET, SO_RCVTIMEO, time, sizeof(time));//设置超时时间为1s
 	while (recvLOCK) {
-		Sleep(100);
+		Sleep(10);
 	}
 	recvLOCK = 1;
-	c->out("从客户端接受消息中……");
+	//c->out("从客户端接受消息中……");
 	char recvBuf[1024] = "";
 	if (recv(*sockConnect, recvBuf, 1024, 0) == -1)//TCP CLIENT端关闭后，服务器端的recv会一直返回-1，此时如果不退出，服务端recv会一直接收
 	{
-		c->err("从客户端接收消息失败");
+		//c->err("从客户端接收消息失败");
 		recvLOCK = 0;
 		return "";
 	}
@@ -62,41 +62,36 @@ string Player::recvch(const char* time)
 	return "";
 }
 
+
+bool Player::hearttime() {
+	time_t nowtime = time(0);
+	if (nowtime - lasttime >= 5) {
+		return true;
+	}
+	//lasttime = nowtime;
+	return false;
+}
+
+
 int Player::heart()
 {
 	int hearttimer = 0;
 	int errnum = 0;
+	lasttime = time(0);
 	while (1) {
-		Sleep(1000);
+		Sleep(10);
 		//c->out("从客户端接受消息中……");
 		string recvBuf = recvch("1");
 		if (recvBuf == "")
 		{
-			hearttimer++;
+			if (hearttime()) return 0;
+		}
+		else if (recvBuf == "heart") {
+			sendstr("收到心跳包");
+			lasttime = time(0);
 		}
 		else {
-			/********************************************/
-			if (recvBuf == "heart") {
-				errnum = 0;
-				hearttimer = 0;
-				sendstr("收到心跳包");				
-			}
-			/********************************************/
-			else if (recvBuf == ""){
-				hearttimer++;
-			}
-			/********************************************/
-			else {
 					c->out("接收到该客户端的消息：" + recvBuf);
-					hearttimer++;
-				}
-			/********************************************/
-		}
-		if (hearttimer >= 5) {
-			errnum++;
-		}
-		if (errnum >= 5) {
-			return 0;
 		}
 	}
 	return -1;

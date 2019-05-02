@@ -6,7 +6,7 @@ class Player
 {
 private:
 	SOCKET *sockConnect;
-	
+	time_t lasttime;
 public:
 	DB *db;
 	Log *c;
@@ -25,7 +25,9 @@ public:
 	int playernum;
 	bool start();
 	bool sendstr(string str);
-	string recvch(const char* timeout = "60000");//timeout ms
+	string recvch(const char* timeout = "60000");
+	bool hearttime();
+	//timeout ms
 	int heart();
 	int sendLOCK = 0;
 	int recvLOCK = 0;
