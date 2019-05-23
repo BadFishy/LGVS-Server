@@ -30,6 +30,9 @@
     <ClInclude Include="..\threadPool\ThreadPool.hpp">
       <Filter>头文件</Filter>
     </ClInclude>
+    <ClInclude Include="room.h">
+      <Filter>头文件</Filter>
+    </ClInclude>
   </ItemGroup>
   <ItemGroup>
     <ClCompile Include="..\Log\log.cpp">
@@ -45,6 +48,9 @@
       <Filter>源文件</Filter>
     </ClCompile>
     <ClCompile Include="Game-Wuziqi.cpp">
+      <Filter>源文件</Filter>
+    </ClCompile>
+    <ClCompile Include="room.cpp">
       <Filter>源文件</Filter>
     </ClCompile>
   </ItemGroup>

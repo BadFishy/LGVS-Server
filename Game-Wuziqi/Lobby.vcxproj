@@ -159,6 +159,7 @@
     <ClInclude Include="..\Log\log.h" />
     <ClInclude Include="..\threadPool\ThreadPool.hpp" />
     <ClInclude Include="player\player.h" />
+    <ClInclude Include="room.h" />
     <ClInclude Include="server\Server.h" />
   </ItemGroup>
   <ItemGroup>
@@ -166,6 +167,7 @@
     <ClCompile Include="..\Log\log.cpp" />
     <ClCompile Include="Game-Wuziqi.cpp" />
     <ClCompile Include="player\player.cpp" />
+    <ClCompile Include="room.cpp" />
     <ClCompile Include="server\Server.cpp" />
   </ItemGroup>
   <Import Project="$(VCTargetsPath)\Microsoft.Cpp.targets" />

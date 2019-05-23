@@ -1,15 +1,15 @@
 #include "player.h"
-
+#include "room.h"
 
 
 bool Player::start()
 {
 	
 	c->out("创建玩家" + std::to_string(playernum) + "线程成功");
-	if (sendstr("test" + std::to_string(playernum)) == false) {
+	//if (sendstr("test" + std::to_string(playernum)) == false) {
 		//c->err("发送失败！");
-		return false;
-	}
+		//return false;
+	//}
 	
 	//char *recvbuf;
 	//recvch();
@@ -25,8 +25,14 @@ bool Player::sendstr(string str)
 		Sleep(10); 
 	}
 	sendLOCK = 1;
-	//c->out("向客户端发送消息："+ str);
-	const char *sendBuf = str.data();
+	
+	char sendBuf[64];
+	int i;
+	for (i=0; i < str.length(); i++) {
+		sendBuf[i] = str[i];
+	}
+	sendBuf[i] = '\0';
+	c->out("向客户端发送消息：" + (string)sendBuf);
 	if (send(*sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
 		c->err("向客户端发送消息失败");
 		sendLOCK = 0;
@@ -63,9 +69,9 @@ string Player::recvch(const char* time)
 }
 
 
-bool Player::hearttime() {
+bool Player::hearttime(int s) {
 	time_t nowtime = time(0);
-	if (nowtime - lasttime >= 5) {
+	if (nowtime - lasttime >= s) {
 		return true;
 	}
 	//lasttime = nowtime;
@@ -84,7 +90,7 @@ int Player::heart()
 		string recvBuf = recvch("1");
 		if (recvBuf == "")
 		{
-			if (hearttime()) return 0;
+			//if (hearttime(5)) return -1;
 		}
 		else if (recvBuf == "heart") {
 			sendstr("收到心跳包");
@@ -93,7 +99,79 @@ int Player::heart()
 		else {
 			c->out("接收到该客户端的消息：" + recvBuf);
 			lasttime = time(0);
+			fenge(recvBuf);
 		}
 	}
 	return -1;
 }
+Room *room = new Room();
+
+int Player::fenge(string s)
+{
+	string str = s;
+	const char *sep = " "; //分割接收的数据
+	char *p;
+	string shou[5];
+	p = strtok((char*)str.data(), sep);
+	shou[0] = p;
+	if (shou[0] == "wuziqi") {
+		for (int i = 0; i < 3; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		c->out("五子棋识别号:" + shou[1] + " 主客：" + shou[2]);
+		setRoomid(shou[1]);
+		if (shou[2] == "0") {
+			room->setRoomid(roomid);
+			room->setZhu(ziji, roomid);
+			for (int j = 0; j < 10; j++) {
+				c->out("五子棋识别号:" + shou[1] + " 主机等待连接");
+				if (room->getStep() == 3) {
+					enemy = room->getKe(roomid);
+					c->out("握手成功1");
+					//room->init();
+					return 0;
+				}
+				Sleep(1000);
+			}
+			room->init();
+			return -1;
+		}
+		if (shou[2] == "1") {
+			//room->setRoomid(roomid);
+			room->setKe(ziji, roomid);
+			for (int j = 0; j < 10; j++) {
+				c->out("五子棋识别号:" + shou[1] + " 客机等待连接");
+				if (room->getStep() == 3) {
+					enemy = room->getZhu(roomid);
+					c->out("握手成功2");
+					//room->init();
+					return 1;
+				}
+				Sleep(1000);
+			}
+			room->init();
+			return -1;
+		}
+	}
+	s += " ";
+	if (shou[0] == "add") {
+		c->out(s);
+		enemy->sendstr(s);
+	}
+
+	if (shou[0] == "win") {
+		enemy->sendstr(s);
+	}
+
+	if (shou[0] == "agree") {
+		enemy->sendstr(s);
+	}
+
+	if (shou[0] == "reject") {
+		enemy->sendstr(s);
+	}
+
+	return -1;
+}
+

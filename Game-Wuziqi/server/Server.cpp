@@ -25,6 +25,7 @@ int Server::start()
 		login_user->out("建立连接");
 		playernum++;
 		Player *player = new Player(sockConnect, login_user, playernum);
+		player->setZiji(player);
 		login_user->out("创建玩家" + std::to_string(playernum) + "线程中...");
 
 		
