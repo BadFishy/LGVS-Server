@@ -90,16 +90,19 @@ int Player::heart()
 		string recvBuf = recvch("1");
 		if (recvBuf == "")
 		{
-			//if (hearttime(5)) return -1;
+			if (hearttime(5)) {
+				enemy->sendstr("quit");
+				return -1;
+			}
 		}
 		else if (recvBuf == "heart") {
-			sendstr("收到心跳包");
+			//sendstr("收到心跳包");
 			lasttime = time(0);
 		}
 		else {
 			c->out("接收到该客户端的消息：" + recvBuf);
-			lasttime = time(0);
 			fenge(recvBuf);
+			lasttime = time(0);
 		}
 	}
 	return -1;
@@ -109,7 +112,7 @@ Room *room = new Room();
 int Player::fenge(string s)
 {
 	string str = s;
-	const char *sep = " "; //分割接收的数据
+	const char *sep = ","; //分割接收的数据
 	char *p;
 	string shou[5];
 	p = strtok((char*)str.data(), sep);
@@ -124,54 +127,71 @@ int Player::fenge(string s)
 		if (shou[2] == "0") {
 			room->setRoomid(roomid);
 			room->setZhu(ziji, roomid);
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < 5; j++) {
 				c->out("五子棋识别号:" + shou[1] + " 主机等待连接");
-				if (room->getStep() == 3) {
+				if (room->getStep() == 3 || room->getStep() == 2) {
 					enemy = room->getKe(roomid);
+					while (enemy == false) {
+						c->err("没有找到对手");
+						Sleep(1000);
+						enemy = room->getKe(roomid);
+					}
 					c->out("握手成功1");
-					//room->init();
+					room->over();
+					sendstr("starthei");
 					return 0;
 				}
-				Sleep(1000);
+				Sleep(2000);
 			}
-			room->init();
+			room->shibai();
 			return -1;
 		}
 		if (shou[2] == "1") {
-			//room->setRoomid(roomid);
+			room->setRoomid(roomid);
 			room->setKe(ziji, roomid);
-			for (int j = 0; j < 10; j++) {
+			for (int j = 0; j < 5; j++) {
 				c->out("五子棋识别号:" + shou[1] + " 客机等待连接");
-				if (room->getStep() == 3) {
+				if (room->getStep() == 3 || room->getStep() == 1) {
 					enemy = room->getZhu(roomid);
+					while (enemy == false) {
+						c->err("没有找到对手");
+						Sleep(1000);
+						enemy = room->getZhu(roomid);
+					}
 					c->out("握手成功2");
-					//room->init();
+					room->over();
+					sendstr("startbai");
 					return 1;
 				}
-				Sleep(1000);
+				Sleep(2000);
 			}
-			room->init();
+			room->shibai();
 			return -1;
 		}
 	}
-	s += " ";
-	if (shou[0] == "add") {
-		c->out(s);
-		enemy->sendstr(s);
-	}
+	if (roomid != "0" && enemy!=false) {
+		//s += " ";
+		if (shou[0] == "add") {
+			for (int i = 0; i < 3; i++) {
+				shou[i] = p;
+				p = strtok(NULL, sep);
+			}
 
-	if (shou[0] == "win") {
-		enemy->sendstr(s);
-	}
+			c->out("棋局：" + roomid + " 传输消息：" + s);
+			enemy->sendstr("add,"+ shou[1] +","+ shou[2]);
+		}
 
-	if (shou[0] == "agree") {
-		enemy->sendstr(s);
-	}
+		if (shou[0] == "win") {
+			c->out("棋局：" + roomid + "得出结果");
+			enemy->sendstr("win");
+		}
 
-	if (shou[0] == "reject") {
-		enemy->sendstr(s);
+		if (shou[0] == "quit") {
+			c->out("棋局：" + roomid + " 传输消息：" + s);
+			enemy->sendstr(s);
+		}
 	}
-
+	
 	return -1;
 }
 

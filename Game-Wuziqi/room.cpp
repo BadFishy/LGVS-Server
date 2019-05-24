@@ -16,6 +16,7 @@ bool Room::setRoomid(string id)
 {
 	{
 		while (step != 0) {
+			if (id == roomid)return 0;
 			Sleep(100);
 		}
 		roomid = id;
@@ -48,19 +49,20 @@ bool Room::setKe(Player * aa, string id)
 
 Player * Room::getZhu(string id)
 {
-	{
-		if (id == roomid)
+
+		if (id == roomid) {
+			step -= 1;
 			return zhu;
-	}
+		}
 	return false;
 }
 
 Player * Room::getKe(string id)
 {
-	{
-		if (id == roomid)
+		if (id == roomid) {
+			step -= 2;
 			return ke;
-	}
+		}
 	return false;
 }
 
@@ -69,9 +71,18 @@ int Room::getStep()
 	return step;
 }
 
-bool Room::init()
+bool Room::over()
 {
-	string roomid = 0;
-	step = 0;
-	return 0;
+	if (step == 0) {
+		roomid = "0";
+		return true;
+	}
 }
+
+bool Room::shibai()
+{
+	step = 0;
+	roomid = "0";
+	return true;
+}
+

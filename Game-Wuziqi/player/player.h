@@ -14,7 +14,8 @@ public:
 	Log *c;
 	int playerdeteLOCK = 0;
 	Player(SOCKET *sock, Log *userlog, int num) {
-		
+		roomid = "0";
+		enemy = false;
 		sockConnect = sock;
 		c = userlog;
 		playernum = num;

@@ -24,6 +24,7 @@ public:
 	Player *getKe(string id) ;
 	int getStep();
 
-	bool init() ;
+	bool over() ;
+	bool shibai();
 };
 
