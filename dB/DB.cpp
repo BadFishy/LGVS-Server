@@ -88,4 +88,90 @@ bool DB::tongshicunzaiDB(string biao, string lie1, string zhi1, string lie2, str
 	return false;
 }
 
+//查询数据
+bool DB::QueryDatabase(const char* q) {
+	char query[150];    //查询语句
+	//将数据格式化输出到字符串
+	sprintf_s(query, "select * from %s", q);
+	//设置编码格式
+	mysql_query(&mysql, "set names gbk");
 
+	if (mysql_query(&mysql, query)) {
+		printf("Query failed (%s)\n", mysql_error(&mysql));
+		return false;
+	}
+	else {
+		printf("query success\n");
+	}
+
+	res = mysql_store_result(&mysql);
+	if (!res) {
+		printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		return false;
+	}
+
+	printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
+
+	// 获取列数
+	int j = mysql_num_fields(res);
+
+	//存储字段信息
+	char *str_field[32];
+
+	//获取字段名
+	for (int i = 0; i < j; i++) {
+		str_field[i] = mysql_fetch_field(res)->name;
+	}
+
+	//打印字段
+	for (int i = 0; i < j; i++)
+		printf("%10s\t", str_field[i]);
+	printf("\n");
+
+	//打印查询结果
+	//MYSQL_ROW mysql_fetch_row(MYSQL_RES *result)
+	//Fetches the next row from the result set
+	while (column = mysql_fetch_row(res)) {
+		for (int i = 0; i < j; i++)
+			printf("%10s\t", column[i]);
+		printf("\n");
+	}
+	return true;
+}
+
+string DB::cha(const char* q)
+{
+	char query[150];    //查询语句
+//将数据格式化输出到字符串
+	sprintf_s(query, "select * from %s", q);
+	//设置编码格式
+	mysql_query(&mysql, "set names gbk");
+
+	if (mysql_query(&mysql, query)) {
+		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		return false;
+	}
+	else {
+		//printf("query success\n");
+	}
+
+	res = mysql_store_result(&mysql);
+	if (!res) {
+		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		return false;
+	}
+
+	//printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
+
+	// 获取列数
+	int j = mysql_num_fields(res);
+	
+	int hang = 0;
+	// 获取行数
+	string bak = std::to_string(mysql_num_rows(res));
+	while (column = mysql_fetch_row(res)) {
+		for (int i = 0; i < j; i++)
+			bak += "," + (string)column[i];
+	}
+	return bak;
+}

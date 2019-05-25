@@ -87,7 +87,19 @@ int Player::heart()
 			if (hearttime()) return 0;
 		}
 		else if (recvBuf == "heart") {
-			sendstr("收到心跳包");
+			//sendstr("收到心跳包");
+			lasttime = time(0);
+		}
+		else if (recvBuf == "class") {
+			sendstr(db->cha("CLASS"));
+			lasttime = time(0);
+		}
+		else if (recvBuf == "rooms") {
+			sendstr(db->cha("HOME"));
+			lasttime = time(0);
+		}
+		else if (recvBuf == "home") {
+
 			lasttime = time(0);
 		}
 		else {

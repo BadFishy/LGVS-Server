@@ -117,6 +117,46 @@ bool initdb(Log *c, DB* db) {
 		return false;
 	}
 
+	if (db->runSQL("CREATE TABLE IF NOT EXISTS `USER`("
+		"`uid` INT(16) UNSIGNED AUTO_INCREMENT,"
+		"`username` VARCHAR(16) NOT NULL,"
+		"`password` CHAR(32) NOT NULL,"
+		"`nickname` VARCHAR(16),"
+		"`email` VARCHAR(50),"
+		"`regtime` DATETIME DEFAULT CURRENT_TIMESTAMP,"
+		"`lasttime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
+		"`money` INT(16) NOT NULL DEFAULT 0,"
+		"`online` BOOLEAN NOT NULL DEFAULT 0,"
+		"`home` INT(16),"
+		"`ban` BOOLEAN NOT NULL DEFAULT 0,"
+		"PRIMARY KEY(`uid`)"
+		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
+		return false;
+	}
+
+
+	if (db->runSQL("CREATE TABLE IF NOT EXISTS `HOME`("
+		"`hid` INT(16) UNSIGNED AUTO_INCREMENT,"
+		"`home_class` INT(16) NOT NULL references CLASS (cid),"
+		"`home_max` INT(3) NOT NULL,"
+		"`home_num` INT(3) NOT NULL,"
+		"`home_mem` TEXT(50) NOT NULL,"
+		"`home_state` INT(3) NOT NULL DEFAULT 1,"
+		"PRIMARY KEY(`hid`)"
+		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
+		return false;
+	}
+
+	if (db->runSQL("CREATE TABLE IF NOT EXISTS `CLASS`("
+		"`cid` INT(16) UNSIGNED AUTO_INCREMENT,"
+		"`game_name` VARCHAR(32) NOT NULL,"
+		"`game_max` INT(3) NOT NULL,"
+		"`game_ini` TEXT,"
+		"PRIMARY KEY(`cid`)"
+		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
+		return false;
+	}
+
 	{
 		vector<string> tmp_files;
 
