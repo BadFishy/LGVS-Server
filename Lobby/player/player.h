@@ -7,6 +7,8 @@ class Player
 private:
 	SOCKET *sockConnect;
 	time_t lasttime;
+	int uid;
+	int hid;
 public:
 	DB *db;
 	Log *c;
@@ -33,5 +35,6 @@ public:
 	int sendLOCK = 0;
 	int recvLOCK = 0;
 	int fenge(string s);
+
 };
 

@@ -85,11 +85,16 @@ int Player::heart()
 		if (recvBuf == "")
 		{
 			if (hearttime()) {
-				//db->runSQL("UPDATE `USER` SET `online` = '0' WHERE `USER`.`uid` = 1");
+				string update = "UPDATE `USER` SET `online` = '0',`home` = NULL, `ready` = '0' WHERE `USER`.`uid` = " + to_string(uid);
+				db->runSQL(update.data());
 				return 0;
 			}
 		}
 		else if (recvBuf == "heart") {
+			if (hid != 0) {
+				string update = "UPDATE `USER` SET `home` = NULL, `ready` = '0' WHERE `USER`.`uid` = " + to_string(uid);
+				db->runSQL(update.data());
+			}
 			//sendstr("收到心跳包");
 			lasttime = time(0);
 		}
@@ -99,17 +104,10 @@ int Player::heart()
 			//sendstr("CLASS");
 			lasttime = time(0);
 		}
-		else if (recvBuf == "rooms") {
-			sendstr("f5," + db->cha("HOME"));
-			lasttime = time(0);
-		}
-		else if (recvBuf == "home") {
 
-			lasttime = time(0);
-		}
 		else {
 			c->out("接收到该客户端的消息：" + recvBuf);
-			fenge(recvBuf);
+			if(fenge(recvBuf)==-2)return -1;
 			lasttime = time(0);
 		}
 
@@ -134,16 +132,19 @@ int Player::fenge(string s)
 		return 0;
 	}
 
-	if (shou[0] == "lobby") {
+	else if (shou[0] == "lobby") {
 		for (int i = 0; i < 2; i++) {
 			shou[i] = p;
 			p = strtok(NULL, sep);
 		}
 		if (db->tongshicunzaiDB("USER", "uid", shou[1], "online", "1")) {
+			uid = stoi(shou[1]);
 			sendstr("lobbyok," + db->sou(("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = " + shou[1]).c_str()));
+			return 0;
 		}
 			//db->runSQL("UPDATE `USER` SET `online` = '1' WHERE `USER`.`uid` = 1");
 		sendstr("loss");
+		return -2;
 	}
 
 	else if (shou[0] == "user") {
@@ -154,6 +155,29 @@ int Player::fenge(string s)
 		sendstr("user,"+ db->sou(("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = " + shou[1]).c_str()));
 		return 0;
 	}
+
+	else if (shou[0] == "home") {
+		for (int i = 0; i < 2; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		string update = "UPDATE `USER` SET `home` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
+		db->runSQL(update.data());
+		hid = stoi(shou[1]);
+		sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` ="+shou[1]).c_str()));
+		return 0;
+	}
+
+		else if (shou[0] == "ready") {
+			for (int i = 0; i < 3; i++) {
+				shou[i] = p;
+				p = strtok(NULL, sep);
+			}
+			string update = "UPDATE `USER` SET `ready` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
+			db->runSQL(update.data());
+			sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + shou[2]).c_str()));
+			return 0;
+		}
 
 
 		return -1;

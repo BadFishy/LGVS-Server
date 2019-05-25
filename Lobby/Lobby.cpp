@@ -131,7 +131,7 @@ bool initdb(Log *c, DB* db) {
 		"`money` INT(16) NOT NULL DEFAULT 0,"
 		"`online` BOOLEAN NOT NULL DEFAULT 0,"
 		"`home` INT(16) references HOME (hid),"
-		"`ready` BOOLEAN NOT NULL DEFAULT 0,"
+		"`ready` INT(1) NOT NULL DEFAULT 0,"
 		"`ban` BOOLEAN NOT NULL DEFAULT 0,"
 		"PRIMARY KEY(`uid`)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
@@ -144,7 +144,7 @@ bool initdb(Log *c, DB* db) {
 		"`home_class` INT(16) NOT NULL references CLASS (cid),"
 		"`home_max` INT(3) NOT NULL,"
 		"`home_num` INT(3) NOT NULL,"
-		"`home_state` INT(3) NOT NULL DEFAULT 1,"
+		"`home_state` INT(1) NOT NULL DEFAULT 1,"
 		"PRIMARY KEY(`hid`)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
 		return false;
