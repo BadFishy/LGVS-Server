@@ -35,6 +35,7 @@ public:
 	int sendLOCK = 0;
 	int recvLOCK = 0;
 	int fenge(string s);
+	int fengeready(string s);
 
 };
 

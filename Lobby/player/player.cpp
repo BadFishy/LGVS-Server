@@ -173,8 +173,18 @@ int Player::fenge(string s)
 				shou[i] = p;
 				p = strtok(NULL, sep);
 			}
+			if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_state", "2")) {
+				sendstr("allready");
+			}
 			string update = "UPDATE `USER` SET `ready` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
 			db->runSQL(update.data());
+			if (shou[1] == "1") {
+				if (fengeready(db->sou(("SELECT `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str())) == 1) {
+					db->runSQL(("UPDATE `HOME` SET `home_state` = '2' WHERE `HOME`.`hid` = "+to_string(hid)).c_str());
+					sendstr("allready");
+				}
+				return 0;
+			}
 			sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + shou[2]).c_str()));
 			return 0;
 		}
@@ -183,4 +193,22 @@ int Player::fenge(string s)
 		return -1;
 }
 
+int Player::fengeready(string s) {
+	string str = s;
+	const char *sep = ","; //分割接收的数据
+	char *p;
+	string shou[5];
+	p = strtok((char*)str.data(), sep);
+	shou[0] = p;
+		for (int i = 0; i < stoi(shou[0])+1; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		for (int i = 1; i < stoi(shou[0]) + 1; i++) {
+			if (shou[i] != "1") {
+				return -1;
+			}
+		}
+		return 1;
+}
 
