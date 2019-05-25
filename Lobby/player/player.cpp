@@ -21,9 +21,9 @@ bool Player::start()
 
 bool Player::sendstr(string str)
 {
-	while (sendLOCK) { 
+	/*while (sendLOCK) { 
 		Sleep(10); 
-	}
+	}*/
 	sendLOCK = 1;
 	c->out("向客户端发送消息："+ str);
 	const char *sendBuf = (str).data();
@@ -84,7 +84,10 @@ int Player::heart()
 		string recvBuf = recvch("1");
 		if (recvBuf == "")
 		{
-			//if (hearttime()) return 0;
+			if (hearttime()) {
+				db->runSQL("UPDATE `USER` SET `online` = '0' WHERE `USER`.`uid` = 1");
+				return 0;
+			}
 		}
 		else if (recvBuf == "heart") {
 			//sendstr("收到心跳包");
@@ -130,6 +133,27 @@ int Player::fenge(string s)
 		sendstr("f5," + db->cha(("`HOME` WHERE `home_class` = " + shou[1]).data()));
 		return 0;
 	}
+
+	if (shou[0] == "lobby") {
+		for (int i = 0; i < 2; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		db->runSQL("UPDATE `USER` SET `online` = '1' WHERE `USER`.`uid` = 1");
+		sendstr("lobbyok," + db->sou("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = 1"));
+		return 0;
+	}
+
+	if (shou[0] == "user") {
+		for (int i = 0; i < 2; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		sendstr("user,"+ db->sou("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = 1"));
+		return 0;
+	}
+
+
 		return -1;
 }
 

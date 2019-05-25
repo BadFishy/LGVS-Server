@@ -7,6 +7,7 @@ void player_thread(Player *player){
 	player->heart();
 	//***将数据库中对应玩家的online改为false 清空home数据库
 	player->c->out("即将删除本玩家线程");
+	
 	Sleep(3000);
 	delete player;
 }

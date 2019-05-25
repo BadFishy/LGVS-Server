@@ -175,3 +175,41 @@ string DB::cha(const char* q)
 	}
 	return bak;
 }
+
+string DB::sou(const char* q)
+{
+	char query[150];    //查询语句
+//将数据格式化输出到字符串
+	sprintf_s(query, "%s", q);
+	//设置编码格式
+	mysql_query(&mysql, "set names gbk");
+
+	if (mysql_query(&mysql, query)) {
+		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		return false;
+	}
+	else {
+		//printf("query success\n");
+	}
+
+	res = mysql_store_result(&mysql);
+	if (!res) {
+		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		return false;
+	}
+
+	//printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
+
+	// 获取列数
+	int j = mysql_num_fields(res);
+
+	int hang = 0;
+	// 获取行数
+	string bak = std::to_string(mysql_num_rows(res));
+	while (column = mysql_fetch_row(res)) {
+		for (int i = 0; i < j; i++)
+			bak += "," + (string)column[i];
+	}
+	return bak;
+}
+

@@ -55,5 +55,6 @@ public:
 	bool tongshicunzaiDB(string, string, string, string, string);
 	bool QueryDatabase(const char* query);
 	string cha(const char* query);
+	string sou(const char* query);
 };
 

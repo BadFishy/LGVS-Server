@@ -65,7 +65,7 @@ int start(Log *c)
 		//c->out(db->cha("CLASS"));
 
 		while (true) {
-			Sleep(10000);
+			Sleep(60000);
 			//db->connectDB();
 		}
 	}
@@ -158,6 +158,14 @@ bool initdb(Log *c, DB* db) {
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
 		return false;
 	}
+
+	if (db->runSQL("CREATE TABLE IF NOT EXISTS `ROOM`("
+		"`home` INT(16) NOT NULL references HOME (hid),"
+		"`user` INT(16) NOT NULL references USER (uid)"
+		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
+		return false;
+	}
+
 
 	{
 		vector<string> tmp_files;
