@@ -4,7 +4,6 @@
 
 void player_thread(Player *player){
 	player->start();
-	char ch[100] = "aaa";
 	player->heart();
 	//***将数据库中对应玩家的online改为false 清空home数据库
 	player->c->out("即将删除本玩家线程");
@@ -24,7 +23,7 @@ int Server::start()
 		Log *login_user = new Log("player", (string)inet_ntoa(addrClient.sin_addr));
 		login_user->out("建立连接");
 		playernum++;
-		Player *player = new Player(sockConnect, login_user, playernum);
+		Player *player = new Player(sockConnect, login_user, db,playernum);
 		login_user->out("创建玩家" + std::to_string(playernum) + "线程中...");
 
 		

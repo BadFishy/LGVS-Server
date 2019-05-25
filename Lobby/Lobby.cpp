@@ -62,8 +62,11 @@ int start(Log *c)
 
 		thread lobby_thread(start_lobby_server, lobby_server);	//创建登录服务器线程
 
+		//c->out(db->cha("CLASS"));
+
 		while (true) {
-			cin >> cmd;
+			Sleep(10000);
+			//db->connectDB();
 		}
 	}
 
@@ -127,7 +130,7 @@ bool initdb(Log *c, DB* db) {
 		"`lasttime` TIMESTAMP DEFAULT CURRENT_TIMESTAMP ON UPDATE CURRENT_TIMESTAMP,"
 		"`money` INT(16) NOT NULL DEFAULT 0,"
 		"`online` BOOLEAN NOT NULL DEFAULT 0,"
-		"`home` INT(16),"
+		"`home` INT(16) references HOME (hid),"
 		"`ban` BOOLEAN NOT NULL DEFAULT 0,"
 		"PRIMARY KEY(`uid`)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
@@ -140,7 +143,6 @@ bool initdb(Log *c, DB* db) {
 		"`home_class` INT(16) NOT NULL references CLASS (cid),"
 		"`home_max` INT(3) NOT NULL,"
 		"`home_num` INT(3) NOT NULL,"
-		"`home_mem` TEXT(50) NOT NULL,"
 		"`home_state` INT(3) NOT NULL DEFAULT 1,"
 		"PRIMARY KEY(`hid`)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {

@@ -11,10 +11,11 @@ public:
 	DB *db;
 	Log *c;
 	int playerdeteLOCK = 0;
-	Player(SOCKET *sock, Log *userlog, int num) {
+	Player(SOCKET *sock, Log *userlog, DB *db_in, int num) {
 		sockConnect = sock;
 		c = userlog;
 		playernum = num;
+		db = db_in;
 	};
 	~Player() {
 		closesocket(*sockConnect);
@@ -31,5 +32,6 @@ public:
 	int heart();
 	int sendLOCK = 0;
 	int recvLOCK = 0;
+	int fenge(string s);
 };
 

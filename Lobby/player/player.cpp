@@ -6,10 +6,10 @@ bool Player::start()
 {
 	
 	c->out("创建玩家" + std::to_string(playernum) + "线程成功");
-	if (sendstr("test" + std::to_string(playernum)) == false) {
-		//c->err("发送失败！");
-		return false;
-	}
+	//if (sendstr("test" + std::to_string(playernum)) == false) {
+	//	//c->err("发送失败！");
+	//	return false;
+	//}
 	
 	//char *recvbuf;
 	//recvch();
@@ -25,8 +25,8 @@ bool Player::sendstr(string str)
 		Sleep(10); 
 	}
 	sendLOCK = 1;
-	//c->out("向客户端发送消息："+ str);
-	const char *sendBuf = str.data();
+	c->out("向客户端发送消息："+ str);
+	const char *sendBuf = (str).data();
 	if (send(*sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
 		c->err("向客户端发送消息失败");
 		sendLOCK = 0;
@@ -84,18 +84,20 @@ int Player::heart()
 		string recvBuf = recvch("1");
 		if (recvBuf == "")
 		{
-			if (hearttime()) return 0;
+			//if (hearttime()) return 0;
 		}
 		else if (recvBuf == "heart") {
 			//sendstr("收到心跳包");
 			lasttime = time(0);
 		}
 		else if (recvBuf == "class") {
-			sendstr(db->cha("CLASS"));
+			//c->out(db->cha("CLASS"));
+			sendstr("f5,"+db->cha("CLASS"));
+			//sendstr("CLASS");
 			lasttime = time(0);
 		}
 		else if (recvBuf == "rooms") {
-			sendstr(db->cha("HOME"));
+			sendstr("f5," + db->cha("HOME"));
 			lasttime = time(0);
 		}
 		else if (recvBuf == "home") {
@@ -104,8 +106,31 @@ int Player::heart()
 		}
 		else {
 			c->out("接收到该客户端的消息：" + recvBuf);
+			fenge(recvBuf);
 			lasttime = time(0);
 		}
+
 	}
 	return -1;
 }
+
+int Player::fenge(string s)
+{
+	string str = s;
+	const char *sep = ","; //分割接收的数据
+	char *p;
+	string shou[5];
+	p = strtok((char*)str.data(), sep);
+	shou[0] = p;
+	if (shou[0] == "rooms") {
+		for (int i = 0; i < 2; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		sendstr("f5," + db->cha(("`HOME` WHERE `home_class` = " + shou[1]).data()));
+		return 0;
+	}
+		return -1;
+}
+
+
