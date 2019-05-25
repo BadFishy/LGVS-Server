@@ -2,7 +2,10 @@
 
 bool DB::connectDB()
 {
-	{
+	while (dbing) {
+		Sleep(10); 
+	}
+	dbing = true;
 		
 		mysql_init(&mysql);
 		if (!(mysql_real_connect(&mysql, host.data(), user.data(), psw.data(), table.data(), port, NULL, 0)))
@@ -11,36 +14,51 @@ bool DB::connectDB()
 			
 			string buffer = "连接数据库失败！错误代码：" + (string)mysql_error(&mysql);
 			c->err(buffer);
+			dbing = false;
 			return false;
 		}
 		else
 		{
 			c->out("数据库连接成功！");
+			dbing = false;
 			return true;
 		}
 
-	}
+	dbing = false;
 	return false;
 }
 
 bool DB::runSQL(const char* query)
 {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	if (mysql_query(&mysql, query))        //执行SQL语句  
 	{
 		c->err("询问失败！" + (string)mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 	else
 	{
 		c->out("插入成功！");
+		dbing = false;
 		return true;
 	}
+	dbing = false;
 	return false;
 }
 
 //查询数据
 bool DB::cunzaiDB(string biao, string lie, string zhi)
 {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	string que = "select * from "
 		+ biao +" where "+ lie +" = '"
 		+ zhi + "'";
@@ -52,18 +70,26 @@ bool DB::cunzaiDB(string biao, string lie, string zhi)
 		my_ulonglong rowCount = mysql_num_rows(result);
 		if (rowCount == 0)
 		{
+			dbing = false;
 			return false;//不存在
 		}
 		else
 		{
+			dbing = false;
 			return true;//存在
 		}
 	}
+	dbing = false;
 	return false;
 }
 
 bool DB::tongshicunzaiDB(string biao, string lie1, string zhi1, string lie2, string zhi2)
 {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	string que = "select * from "
 		+ biao + " where "
 		+ lie1 + " = '"
@@ -78,18 +104,26 @@ bool DB::tongshicunzaiDB(string biao, string lie1, string zhi1, string lie2, str
 		my_ulonglong rowCount = mysql_num_rows(result);
 		if (rowCount == 0)
 		{
+			dbing = false;
 			return false;//不存在
 		}
 		else
 		{
+			dbing = false;
 			return true;//存在
 		}
 	}
+	dbing = false;
 	return false;
 }
 
 //查询数据
 bool DB::QueryDatabase(const char* q) {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	char query[150];    //查询语句
 	//将数据格式化输出到字符串
 	sprintf_s(query, "select * from %s", q);
@@ -98,6 +132,7 @@ bool DB::QueryDatabase(const char* q) {
 
 	if (mysql_query(&mysql, query)) {
 		printf("Query failed (%s)\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 	else {
@@ -107,6 +142,7 @@ bool DB::QueryDatabase(const char* q) {
 	res = mysql_store_result(&mysql);
 	if (!res) {
 		printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 
@@ -136,11 +172,17 @@ bool DB::QueryDatabase(const char* q) {
 			printf("%10s\t", column[i]);
 		printf("\n");
 	}
+	dbing = false;
 	return true;
 }
 
 string DB::cha(const char* q)
 {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	char query[150];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "select * from %s", q);
@@ -149,6 +191,7 @@ string DB::cha(const char* q)
 
 	if (mysql_query(&mysql, query)) {
 		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 	else {
@@ -158,6 +201,7 @@ string DB::cha(const char* q)
 	res = mysql_store_result(&mysql);
 	if (!res) {
 		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 
@@ -173,11 +217,17 @@ string DB::cha(const char* q)
 		for (int i = 0; i < j; i++)
 			bak += "," + (string)column[i];
 	}
+	dbing = false;
 	return bak;
 }
 
 string DB::sou(const char* q)
 {
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
 	char query[150];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "%s", q);
@@ -186,6 +236,7 @@ string DB::sou(const char* q)
 
 	if (mysql_query(&mysql, query)) {
 		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 	else {
@@ -195,6 +246,7 @@ string DB::sou(const char* q)
 	res = mysql_store_result(&mysql);
 	if (!res) {
 		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		dbing = false;
 		return false;
 	}
 
@@ -210,6 +262,7 @@ string DB::sou(const char* q)
 		for (int i = 0; i < j; i++)
 			bak += "," + (string)column[i];
 	}
+	dbing = false;
 	return bak;
 }
 

@@ -66,7 +66,7 @@ int start(Log *c)
 
 		while (true) {
 			Sleep(60000);
-			//db->connectDB();
+			db->connectDB();
 		}
 	}
 
@@ -131,6 +131,7 @@ bool initdb(Log *c, DB* db) {
 		"`money` INT(16) NOT NULL DEFAULT 0,"
 		"`online` BOOLEAN NOT NULL DEFAULT 0,"
 		"`home` INT(16) references HOME (hid),"
+		"`ready` BOOLEAN NOT NULL DEFAULT 0,"
 		"`ban` BOOLEAN NOT NULL DEFAULT 0,"
 		"PRIMARY KEY(`uid`)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
@@ -155,13 +156,6 @@ bool initdb(Log *c, DB* db) {
 		"`game_max` INT(3) NOT NULL,"
 		"`game_ini` TEXT,"
 		"PRIMARY KEY(`cid`)"
-		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
-		return false;
-	}
-
-	if (db->runSQL("CREATE TABLE IF NOT EXISTS `ROOM`("
-		"`home` INT(16) NOT NULL references HOME (hid),"
-		"`user` INT(16) NOT NULL references USER (uid)"
 		")ENGINE = InnoDB DEFAULT CHARSET = utf8;  ") == false) {
 		return false;
 	}

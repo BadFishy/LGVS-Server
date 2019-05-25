@@ -24,6 +24,8 @@ private:
 	char field[32][32]; //存字段名二维数组
 	MYSQL_RES *res;     //行的一个查询结果集
 	MYSQL_ROW column;   //数据行的列
+
+	bool dbing = false;
 	
 
 public:

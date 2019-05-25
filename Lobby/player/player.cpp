@@ -85,7 +85,7 @@ int Player::heart()
 		if (recvBuf == "")
 		{
 			if (hearttime()) {
-				db->runSQL("UPDATE `USER` SET `online` = '0' WHERE `USER`.`uid` = 1");
+				//db->runSQL("UPDATE `USER` SET `online` = '0' WHERE `USER`.`uid` = 1");
 				return 0;
 			}
 		}
@@ -139,17 +139,19 @@ int Player::fenge(string s)
 			shou[i] = p;
 			p = strtok(NULL, sep);
 		}
-		db->runSQL("UPDATE `USER` SET `online` = '1' WHERE `USER`.`uid` = 1");
-		sendstr("lobbyok," + db->sou("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = 1"));
-		return 0;
+		if (db->tongshicunzaiDB("USER", "uid", shou[1], "online", "1")) {
+			sendstr("lobbyok," + db->sou(("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = " + shou[1]).c_str()));
+		}
+			//db->runSQL("UPDATE `USER` SET `online` = '1' WHERE `USER`.`uid` = 1");
+		sendstr("loss");
 	}
 
-	if (shou[0] == "user") {
+	else if (shou[0] == "user") {
 		for (int i = 0; i < 2; i++) {
 			shou[i] = p;
 			p = strtok(NULL, sep);
 		}
-		sendstr("user,"+ db->sou("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = 1"));
+		sendstr("user,"+ db->sou(("SELECT `uid`, `username`, `regtime`, `lasttime`, `money` FROM `USER` WHERE `uid` = " + shou[1]).c_str()));
 		return 0;
 	}
 
