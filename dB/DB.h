@@ -58,5 +58,7 @@ public:
 	bool QueryDatabase(const char* query);
 	string cha(const char* query);
 	string sou(const char* query);
+	string sou_no_hang(const char* query);
+	string sou_only_hang(const char* query);
 };
 

@@ -14,7 +14,7 @@ void player_thread(Player *player){
 
 int Server::start()
 {
-	dpool::ThreadPool pool(4);
+	dpool::ThreadPool pool(8);
 
 	while (1) {
 		len = sizeof(SOCKADDR);

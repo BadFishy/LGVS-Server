@@ -12,6 +12,7 @@ private:
 	//2 主方未连接，客方已经连接
 	//3 客方已经连接，主方已经连接
 
+
 public:
 	Room() ;
 	~Room();
@@ -23,7 +24,7 @@ public:
 	Player *getZhu(string id) ;
 	Player *getKe(string id) ;
 	int getStep();
-
+	
 	bool over() ;
 	bool shibai();
 };

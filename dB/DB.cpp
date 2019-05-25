@@ -43,7 +43,7 @@ bool DB::runSQL(const char* query)
 	}
 	else
 	{
-		c->out("插入成功！");
+		//c->out("插入成功！："+ (string)query);
 		dbing = false;
 		return true;
 	}
@@ -265,4 +265,96 @@ string DB::sou(const char* q)
 	dbing = false;
 	return bak;
 }
+string DB::sou_no_hang(const char* q)
+{
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
 
+	char query[150];    //查询语句
+//将数据格式化输出到字符串
+	sprintf_s(query, "%s", q);
+	//设置编码格式
+	mysql_query(&mysql, "set names gbk");
+
+	if (mysql_query(&mysql, query)) {
+		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		dbing = false;
+		return false;
+	}
+	else {
+		//printf("query success\n");
+	}
+
+	res = mysql_store_result(&mysql);
+	if (!res) {
+		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		dbing = false;
+		return false;
+	}
+
+	//printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
+
+	// 获取列数
+	int j = mysql_num_fields(res);
+
+	int hang = 0;
+	// 获取行数
+	string bak;
+	while (column = mysql_fetch_row(res)) {
+		bak = column[0];
+		for (int i = 1; i < j; i++)
+			bak += "," + (string)column[i];
+	}
+	dbing = false;
+	return bak;
+}
+
+string DB::sou_only_hang(const char* q)
+{
+	while (dbing) {
+		Sleep(10);
+	}
+	dbing = true;
+
+	char query[150];    //查询语句
+//将数据格式化输出到字符串
+	sprintf_s(query, "%s", q);
+	//设置编码格式
+	mysql_query(&mysql, "set names gbk");
+
+	if (mysql_query(&mysql, query)) {
+		//printf("Query failed (%s)\n", mysql_error(&mysql));
+		dbing = false;
+		return false;
+	}
+	else {
+		//printf("query success\n");
+	}
+
+	res = mysql_store_result(&mysql);
+	if (!res) {
+		//printf("Couldn't get result from %s\n", mysql_error(&mysql));
+		dbing = false;
+		return false;
+	}
+
+	//printf("number of dataline returned: %d\n", mysql_affected_rows(&mysql));
+
+	// 获取列数
+	int j = mysql_num_fields(res);
+
+	int hang = 0;
+	// 获取行数
+	string bak;
+	while (column = mysql_fetch_row(res)) {
+		bak = column[0];
+		hang++;
+		for (int i = 1; i < j; i++)
+			bak += "," + (string)column[i];
+		
+	}
+	dbing = false;
+	return to_string(hang);
+}

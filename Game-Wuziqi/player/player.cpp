@@ -146,7 +146,7 @@ int Player::fenge(string s)
 			room->shibai();
 			return -1;
 		}
-		if (shou[2] == "1") {
+		else if (shou[2] == "1") {
 			room->setRoomid(roomid);
 			room->setKe(ziji, roomid);
 			for (int j = 0; j < 5; j++) {
@@ -165,6 +165,51 @@ int Player::fenge(string s)
 				}
 				Sleep(2000);
 			}
+			room->shibai();
+			return -1;
+		}
+		else if (shou[2] == "2") {
+			if (room->setRoomid(roomid) == true) {
+				room->setZhu(ziji, roomid);
+				sendstr("start,0");
+				for (int j = 0; j < 5; j++) {
+					c->out("五子棋识别号:" + shou[1] + " 主机等待连接");
+					if (room->getStep() == 3 || room->getStep() == 2) {
+						enemy = room->getKe(roomid);
+						while (enemy == false) {
+							c->err("没有找到对手");
+							Sleep(1000);
+							enemy = room->getKe(roomid);
+						}
+						c->out("握手成功1");
+						room->over();
+						sendstr("starthei");
+						return 0;
+					}
+					Sleep(2000);
+				}
+			}
+			else {
+				room->setKe(ziji, roomid);
+				sendstr("start,1");
+				for (int j = 0; j < 5; j++) {
+					c->out("五子棋识别号:" + shou[1] + " 客机等待连接");
+					if (room->getStep() == 3 || room->getStep() == 1) {
+						enemy = room->getZhu(roomid);
+						while (enemy == false) {
+							c->err("没有找到对手");
+							Sleep(1000);
+							enemy = room->getZhu(roomid);
+						}
+						c->out("握手成功2");
+						room->over();
+						sendstr("startbai");
+						return 1;
+					}
+					Sleep(2000);
+				}
+			}
+			
 			room->shibai();
 			return -1;
 		}

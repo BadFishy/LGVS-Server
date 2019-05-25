@@ -16,13 +16,13 @@ bool Room::setRoomid(string id)
 {
 	{
 		while (step != 0) {
-			if (id == roomid)return 0;
+			if (id == roomid)return false;
 			Sleep(100);
 		}
 		roomid = id;
 		step = 0;
 	}
-	return 0;
+	return true;
 }
 
 bool Room::setZhu(Player * aa, string id)
