@@ -60,9 +60,12 @@ int start(Log *c)
 		Server *lobby_server = new Server(config, db);	//实例化大厅服务器
 		lobby_server->init();	//初始化登陆服务器
 
-		thread lobby_thread(start_lobby_server, lobby_server);	//创建登录服务器线程
+		thread lobby_thread(start_lobby_server, lobby_server);	//创建服务器线程
 
 		//c->out(db->cha("CLASS"));
+
+		db->runSQL("UPDATE `HOME` SET `home_num` = '0', `home_state` = '1' WHERE 1");
+		db->runSQL("UPDATE `USER` SET `online` = '0', `ready` = '0', `home` = NULL WHERE 1;");
 
 		while (true) {
 			Sleep(60000);

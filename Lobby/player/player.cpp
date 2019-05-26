@@ -25,7 +25,7 @@ bool Player::sendstr(string str)
 		Sleep(10); 
 	}*/
 	sendLOCK = 1;
-	//c->out("向客户端发送消息："+ str);
+	c->out("向客户端发送消息："+ str);
 	const char *sendBuf = (str).data();
 	if (send(*sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
 		c->err("向客户端发送消息失败");
@@ -85,8 +85,14 @@ int Player::heart()
 		if (recvBuf == "")
 		{
 			if (hearttime()) {
+				if (hid != 0) {
+					string nowmannum = db->sou_only_hang(("SELECT `online` FROM `USER` WHERE `home` =" + to_string(hid)).data());
+					string update = "UPDATE `HOME` SET `home_num` = " + nowmannum + " WHERE `HOME`.`hid` = " + to_string(hid);
+					db->runSQL(update.data());
+				}
 				string update = "UPDATE `USER` SET `online` = '0',`home` = NULL, `ready` = '0' WHERE `USER`.`uid` = " + to_string(uid);
 				db->runSQL(update.data());
+				
 				return 0;
 			}
 		}
@@ -107,6 +113,12 @@ int Player::heart()
 			sendstr("f5,"+db->cha("CLASS"));
 			//sendstr("CLASS");
 			lasttime = time(0);
+		}
+		else if (recvBuf == "gameover") {
+			db->runSQL(("UPDATE `HOME` SET `home_state` = '1' WHERE `HOME`.`hid` =  " + to_string(hid)).data());
+			sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));
+			lasttime = time(0);
+
 		}
 
 		else {
@@ -151,6 +163,17 @@ int Player::fenge(string s)
 		return -2;
 	}
 
+	else if (shou[0] == "win") {
+		for (int i = 0; i < 2; i++) {
+			shou[i] = p;
+			p = strtok(NULL, sep);
+		}
+		db->runSQL(("UPDATE `USER` SET `money` = money+1 WHERE `USER`.`uid` = " + to_string(uid)).data());
+		db->runSQL(("UPDATE `HOME` SET `home_state` = '1' WHERE `HOME`.`hid` =  " + to_string(hid)).data());
+		sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));
+			return 0;
+	}
+
 	else if (shou[0] == "user") {
 		for (int i = 0; i < 2; i++) {
 			shou[i] = p;
@@ -165,22 +188,26 @@ int Player::fenge(string s)
 			shou[i] = p;
 			p = strtok(NULL, sep);
 		}
-		hid = stoi(shou[1]);
-		//获取最大人数
-		string maxman = db->sou_no_hang(("SELECT `home_max` FROM `HOME` WHERE `hid` = " + to_string(hid)).c_str());
-		c->out("获取到最大玩家数：" + maxman);
-		if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_num", maxman)) {
-			sendstr("f5,manle");
-			return 0;
+		if (hid != stoi(shou[1])) {
+			hid = stoi(shou[1]);
+
+			//获取最大人数
+			string maxman = db->sou_no_hang(("SELECT `home_max` FROM `HOME` WHERE `hid` = " + to_string(hid)).c_str());
+			c->out("获取到最大玩家数：" + maxman);
+			if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_num", maxman)) {
+				sendstr("f5,manle");
+				return 0;
+			}
 		}
+		
 
 		string update = "UPDATE `USER` SET `home` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
 		db->runSQL(update.data());
-		update = "UPDATE `HOME` SET `home_num` = home_num+1 WHERE `HOME`.`hid` = " + to_string(hid);
-		db->runSQL(update.data());
-		/*string nowmannum = db->sou_only_hang(("SELECT `online` FROM `USER` WHERE `home` =" + to_string(hid)).data());
-		update = "UPDATE `HOME` SET `home_num` = " + nowmannum + " WHERE `HOME`.`hid` = " + to_string(hid);
+		/*update = "UPDATE `HOME` SET `home_num` = home_num+1 WHERE `HOME`.`hid` = " + to_string(hid);
 		db->runSQL(update.data());*/
+		string nowmannum = db->sou_only_hang(("SELECT `online` FROM `USER` WHERE `home` =" + to_string(hid)).data());
+		update = "UPDATE `HOME` SET `home_num` = " + nowmannum + " WHERE `HOME`.`hid` = " + to_string(hid);
+		db->runSQL(update.data());
 		
 		sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` ="+shou[1]).c_str()));
 		return 0;
@@ -192,6 +219,7 @@ int Player::fenge(string s)
 				p = strtok(NULL, sep);
 			}
 			if (shou[1] == "1" && db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_state", "2")) {
+				sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
 				sendstr("allready");
 			}
 			string update = "UPDATE `USER` SET `ready` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
@@ -202,6 +230,7 @@ int Player::fenge(string s)
 				if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_num", maxman)) {
 					if (fengeready(db->sou(("SELECT `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str())) == 1) {
 						db->runSQL(("UPDATE `HOME` SET `home_state` = '2' WHERE `HOME`.`hid` = " + to_string(hid)).c_str());
+						sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
 						sendstr("allready");
 					}
 				}
