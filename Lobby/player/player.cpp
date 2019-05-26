@@ -25,9 +25,16 @@ bool Player::sendstr(string str)
 		Sleep(10); 
 	}*/
 	sendLOCK = 1;
+	//setsockopt(*sockConnect, SOL_SOCKET, SO_SNDTIMEO, "10", sizeof("10"));//设置超时时间为1s
 	c->out("向客户端发送消息："+ str);
-	const char *sendBuf = (str).data();
-	if (send(*sockConnect, sendBuf, strlen(sendBuf) + 1, 0) == SOCKET_ERROR) {
+	char sendBuf[10240];
+	int i;
+	for (i = 0; i < str.length(); i++)
+		sendBuf[i] = str[i];
+	sendBuf[i] = '\0';
+
+	//if (send(*sockConnect, sendBuf, strlen(sendBuf) +1 , 0) == SOCKET_ERROR) {
+		if (send(*sockConnect, sendBuf, i+1, 0) == SOCKET_ERROR) {
 		c->err("向客户端发送消息失败");
 		sendLOCK = 0;
 		return false;
@@ -39,21 +46,22 @@ bool Player::sendstr(string str)
 string Player::recvch(const char* time)
 {
 
-	setsockopt(*sockConnect, SOL_SOCKET, SO_RCVTIMEO, time, sizeof(time));//设置超时时间为1s
+	
 	while (recvLOCK) {
 		Sleep(10);
 	}
 	recvLOCK = 1;
+	setsockopt(*sockConnect, SOL_SOCKET, SO_RCVTIMEO, time, sizeof(time));//设置超时时间为1s
 	//c->out("从客户端接受消息中……");
-	char recvBuf[1024] = "";
-	if (recv(*sockConnect, recvBuf, 1024, 0) == -1)//TCP CLIENT端关闭后，服务器端的recv会一直返回-1，此时如果不退出，服务端recv会一直接收
+	char recvBuf[10240] = "";
+	if (recv(*sockConnect, recvBuf, 10240, 0) == -1)//TCP CLIENT端关闭后，服务器端的recv会一直返回-1，此时如果不退出，服务端recv会一直接收
 	{
 		//c->err("从客户端接收消息失败");
 		recvLOCK = 0;
 		return "";
 	}
 	else {
-		//c->out("接收到该客户端发送的信息：" + (string)recvBuf);
+		c->out("接收到该客户端发送的信息：" + (string)recvBuf);
 		recvLOCK = 0;
 		return recvBuf;
 	}
@@ -85,13 +93,14 @@ int Player::heart()
 		if (recvBuf == "")
 		{
 			if (hearttime()) {
+				string update = "UPDATE `USER` SET `online` = '0',`home` = NULL, `ready` = '0' WHERE `USER`.`uid` = " + to_string(uid);
+				db->runSQL(update.data());
 				if (hid != 0) {
 					string nowmannum = db->sou_only_hang(("SELECT `online` FROM `USER` WHERE `home` =" + to_string(hid)).data());
 					string update = "UPDATE `HOME` SET `home_num` = " + nowmannum + " WHERE `HOME`.`hid` = " + to_string(hid);
 					db->runSQL(update.data());
 				}
-				string update = "UPDATE `USER` SET `online` = '0',`home` = NULL, `ready` = '0' WHERE `USER`.`uid` = " + to_string(uid);
-				db->runSQL(update.data());
+				
 				
 				return 0;
 			}
@@ -123,7 +132,13 @@ int Player::heart()
 
 		else {
 			//c->out("接收到该客户端的消息：" + recvBuf);
-			if(fenge(recvBuf)==-2)return -1;
+			try {
+				if (fenge(recvBuf) == -2)return -1;
+			}
+			catch (...) {
+				c->err("出错");
+			}
+			
 			lasttime = time(0);
 		}
 
@@ -196,11 +211,10 @@ int Player::fenge(string s)
 			c->out("获取到最大玩家数：" + maxman);
 			if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_num", maxman)) {
 				sendstr("f5,manle");
+				hid = 0;
 				return 0;
 			}
 		}
-		
-
 		string update = "UPDATE `USER` SET `home` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
 		db->runSQL(update.data());
 		/*update = "UPDATE `HOME` SET `home_num` = home_num+1 WHERE `HOME`.`hid` = " + to_string(hid);
@@ -214,29 +228,30 @@ int Player::fenge(string s)
 	}
 
 		else if (shou[0] == "ready") {
-			for (int i = 0; i < 3; i++) {
+			for (int i = 0; i < 2; i++) {
 				shou[i] = p;
 				p = strtok(NULL, sep);
-			}
-			if (shou[1] == "1" && db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_state", "2")) {
-				sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
-				sendstr("allready");
 			}
 			string update = "UPDATE `USER` SET `ready` = '" + shou[1] + "' WHERE `USER`.`uid` = " + to_string(uid);
 			db->runSQL(update.data());
 			if (shou[1] == "1") {
 
+				if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_state", "2")) {
+					sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
+					sendstr("allready");
+				}
+
 				string maxman = db->sou_no_hang(("SELECT `home_max` FROM `HOME` WHERE `hid` = " + to_string(hid)).c_str());
 				if (db->tongshicunzaiDB("HOME", "hid", to_string(hid), "home_num", maxman)) {
 					if (fengeready(db->sou(("SELECT `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str())) == 1) {
 						db->runSQL(("UPDATE `HOME` SET `home_state` = '2' WHERE `HOME`.`hid` = " + to_string(hid)).c_str());
-						sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
+						//sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));//test
 						sendstr("allready");
 					}
 				}
-				return 0;
+				//return 0;
 			}
-			sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + shou[2]).c_str()));
+			sendstr("f5," + db->sou(("SELECT `uid`, `username`, `regtime`, `money`, `ready` FROM `USER` WHERE `home` =" + to_string(hid)).c_str()));
 			return 0;
 		}
 
@@ -246,16 +261,18 @@ int Player::fenge(string s)
 
 int Player::fengeready(string s) {
 	string str = s;
+	c->out(str);
 	const char *sep = ","; //分割接收的数据
 	char *p;
-	string shou[5];
+	string shou[20];
 	p = strtok((char*)str.data(), sep);
 	shou[0] = p;
-		for (int i = 0; i < stoi(shou[0])+1; i++) {
+	int j = stoi(shou[0]);
+	for (int i = 0; i < j +1; i++) {
 			shou[i] = p;
 			p = strtok(NULL, sep);
 		}
-		for (int i = 1; i < stoi(shou[0]) + 1; i++) {
+		for (int i = 1; i < j + 1; i++) {
 			if (shou[i] != "1") {
 				return -1;
 			}

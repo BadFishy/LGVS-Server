@@ -124,7 +124,7 @@ bool DB::QueryDatabase(const char* q) {
 	}
 	dbing = true;
 
-	char query[150];    //查询语句
+	char query[1024];    //查询语句
 	//将数据格式化输出到字符串
 	sprintf_s(query, "select * from %s", q);
 	//设置编码格式
@@ -183,7 +183,7 @@ string DB::cha(const char* q)
 	}
 	dbing = true;
 
-	char query[150];    //查询语句
+	char query[1024];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "select * from %s", q);
 	//设置编码格式
@@ -228,7 +228,7 @@ string DB::sou(const char* q)
 	}
 	dbing = true;
 
-	char query[150];    //查询语句
+	char query[1024];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "%s", q);
 	//设置编码格式
@@ -272,7 +272,7 @@ string DB::sou_no_hang(const char* q)
 	}
 	dbing = true;
 
-	char query[150];    //查询语句
+	char query[1024];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "%s", q);
 	//设置编码格式
@@ -318,7 +318,7 @@ string DB::sou_only_hang(const char* q)
 	}
 	dbing = true;
 
-	char query[150];    //查询语句
+	char query[1024];    //查询语句
 //将数据格式化输出到字符串
 	sprintf_s(query, "%s", q);
 	//设置编码格式
