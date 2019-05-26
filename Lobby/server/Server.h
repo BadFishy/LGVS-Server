@@ -4,6 +4,7 @@
 #include <time.h>
 #include "DB/DB.h"
 #include "threadPool/threadPool.hpp"
+#include <Ws2tcpip.h>
 //#include <thread>
 
 
@@ -17,7 +18,7 @@ private:
 	SOCKADDR_IN addrClient;
 	int len;
 	int port;
-	
+	dpool::ThreadPool *pool;
 	
 public:
 	Server(Config* config, DB *db_in) {

@@ -3,13 +3,9 @@
 
 
 void player_thread(Player *player){
+	player->c->out("开始玩家线程");
 	player->start();
-	try {
-		player->heart();
-	}
-	catch (...) {
-		cout<<"出错";
-	}
+	player->heart();
 	
 	//***将数据库中对应玩家的online改为false 清空home数据库
 	player->c->out("即将删除本玩家线程");
@@ -20,14 +16,17 @@ void player_thread(Player *player){
 
 int Server::start()
 {
-	dpool::ThreadPool pool(8);
+	pool = new dpool::ThreadPool(8);
 
 	while (1) {
 		len = sizeof(SOCKADDR);
 		c->out("等待用户连接中...");
 		SOCKET *sockConnect = new SOCKET;
 		*sockConnect = accept(sock, (SOCKADDR*)&addrClient, &len);
-		Log *login_user = new Log("player", (string)inet_ntoa(addrClient.sin_addr));
+		char ipbuf[100];
+		(string)inet_ntop(AF_INET, (void*)&addrClient.sin_addr, ipbuf, 16);
+		c->out("连接IP：" + (string)ipbuf);
+		Log *login_user = new Log("player", ipbuf);
 		login_user->out("建立连接");
 		playernum++;
 		Player *player = new Player(sockConnect, login_user, db,playernum);
@@ -36,7 +35,7 @@ int Server::start()
 		
 		//int ret = setsockopt(*sockConnect, SOL_SOCKET, SO_SNDTIMEO, timeout, sizeof(timeout));
 
-		auto fut = pool.submit(player_thread, player);
+		auto fut = pool->submit(player_thread, player);
 		//pool.append(std::bind(player_thread, player));//创建玩家线程
 		//pool.append(std::bind(&Player::heart,player));
 		

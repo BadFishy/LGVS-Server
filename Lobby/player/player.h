@@ -7,8 +7,9 @@ class Player
 private:
 	SOCKET *sockConnect;
 	time_t lasttime;
-	int uid;
-	int hid;
+	int uid=0;
+	int hid=0;
+	int ready=0;
 public:
 	DB *db;
 	Log *c;
